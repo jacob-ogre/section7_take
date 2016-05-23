@@ -62,14 +62,52 @@ sum_take_corp <- summary(take_corp)
 
 # look at keywords in context (kwic)
 options(width = 200)
-num_ctxt <- kwic(take_corp, "[0-9]+", window = 5, valuetype = "regex")
+num_ctxt <- kwic(take_corp, "\ [0-9]+\ ", window = 5, valuetype = "regex")
 acre_ctxt <- kwic(take_corp, "acre", window = 5, valuetype = "regex")
 feet_ctxt <- kwic(take_corp, "(feet)|(ft)", window = 5, valuetype = "regex")
 take_ctxt <- kwic(take_corp, "take", window = 5, valuetype = "regex")
 
+num_amt_ctxt <- kwic(take_corp, "\ [0-9]+\ ^(acr|ac|ind|mile|mi|feet|ft|lf|linear)",
+                     window = 10, 
+                     valuetype = "regex")
+
+num_amt_df <- data.frame(doc = num_amt_ctxt$docname,
+                         pre = num_amt_ctxt$contextPre,
+                         keyword = as.character(num_amt_ctxt$keyword),
+                         post = num_amt_ctxt$contextPost,
+                         position = as.character(num_amt_ctxt$position))
+
+write.table(num_amt_df,
+            file = "~/test_numeric_context_take.tsv",
+            sep = "\t",
+            quote = FALSE,
+            row.names = FALSE)
+
 take_wtok <- tokenize(take_corp, removePunct = TRUE, ngrams = c(1,2))
+
 take_stok <- tokenize(take_corp, what = "sentence")
 
+take_pat1 <- lapply(take_stok, 
+                    FUN = grep,
+                    pattern = "\ [0-9]+\ (acr|ac|ind|mile|mi|feet|ft|lf|linear)",
+                    value = TRUE)
+length(take_pat1)
+head(take_pat1)
+
+take_pat2 <- lapply(take_pat1, 
+                    FUN = grep,
+                    pattern = "affect|degrad|harass|harm|injur|kill",
+                    value = TRUE)
+head(take_pat2, 12)
+
+names(take_pat2) <- paste0(names(take_pat2), "-p")
+take_pat3 <- as.data.frame(unlist(take_pat2))
+names(take_pat3) <- "take_state"
+head(take_pat3)
+dim(take_pat3)
+
+###########################################################################
+# Now into the doc-feature matrix
 take_dfm <- dfm(take_corp, 
                 removePunct = TRUE, 
                 stem = TRUE, 
@@ -137,6 +175,41 @@ ggplot(data = tk10_df, aes(x = factor(cluster), y = tokens)) +
 trim_kmean_15 <- kmeans(weight(trim_dfm, "relFreq"), centers = 15)
 table(trim_kmean_15$cluster)
 tk15_df <- as.data.frame(trim_kmean_15$cluster)
+tk15_df <- cbind(tk15_df, summary(take_corp, 215))
+names(tk15_df) <- c("cluster", "text", "types", "tokens", "sentences", "consult")
+head(tk15_df, 20)
+ggplot(data = tk15_df, aes(x = factor(cluster), y = tokens)) +
+    geom_boxplot() +
+    theme_hc()
+
+trim_dfm2 <- trim(take_dfm, minCount = 5, minDoc = 5)
+dim(trim_dfm2)
+
+trim_kmean_15 <- kmeans(weight(trim_dfm2, "relFreq"), centers = 15)
+table(trim_kmean_15$cluster)
+tk15_df <- as.data.frame(trim_kmean_15$cluster)
+tk15_df <- cbind(tk15_df, summary(take_corp, 215))
+names(tk15_df) <- c("cluster", "text", "types", "tokens", "sentences", "consult")
+head(tk15_df, 20)
+ggplot(data = tk15_df, aes(x = factor(cluster), y = tokens)) +
+    geom_boxplot() +
+    theme_hc()
+
+cl15 <- tk15_df[tk15_df$cluster == 15, ]$consult
+cl15_dat <- long[long$activity_code %in% cl15, ]
+cl15_corp <- corpus(cl15_dat$take)
+cl15_dfm <- dfm(cl15_corp, 
+                removePunct = TRUE, 
+                stem = TRUE, 
+                ngrams = c(1,2),
+                ignoredFeatures = stopwords("english"))
+
+topfeatures(take_dfm, 20)
+cl15_trim <- trim(cl15_dfm, minCount = 4, minDoc = 3)
+
+trim_kmean_15foc <- kmeans(weight(trim_dfm2, "relFreq"), centers = 6)
+table(trim_kmean_15foc$cluster)
+tk15_df <- as.data.frame(trim_kmean_15foc$cluster)
 tk15_df <- cbind(tk15_df, summary(take_corp, 215))
 names(tk15_df) <- c("cluster", "text", "types", "tokens", "sentences", "consult")
 head(tk15_df, 20)
