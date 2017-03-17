@@ -1,0 +1,328 @@
+---
+title: "ESA Section 7 Take Data from FWS"
+author: "Defenders of Wildlife"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_document:
+    css: custom.css
+    df_print: paged
+    fig_caption: yes
+    fig_width: 7
+    fig_height: 5
+    highlight: tango
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+<script async defer src="https://hypothes.is/embed.js"></script>
+
+```{r setup, include=FALSE}
+library(d3wordcloud)
+library(dplyr)
+library(DT)
+library(flexdashboard)
+library(highcharter)
+library(plotly)
+library(shiny)
+library(stringr)
+library(tm)
+library(viridisLite)
+library(wordcloud)
+
+load("../data/take_data.RData")
+```
+
+# Overview
+
+Section 7(a)(2) of the US Endangered Species Act (ESA) directs federal agencies to consult with the [US Fish and Wildlife Service (FWS)](https://www.fws.gov) and/or [National Marine Fisheries Service (NMFS)](http://www.nmfs.noaa.gov/) if an action they fund, permit, or carry out may affect ESA-listed species. If an action is likely to adversely affect (LAA) one or more ESA-listed species, then 'formal consultation' is required. As part of formal consultation, FWS or NMFS may provide in their Biological Opinion an Incidental Take Statement (ITS) that stipulates the kind and amount of [take](http://www.nmfs.noaa.gov/pr/pdfs/laws/esa_section3.pdf) - such as harming, harassing, or killing of a listed species - that is expected and authorized for the action. Tracking take is **critical** to understanding how much habitat and how many individuals are allowed to be lost through completely legal means. 
+
+FWS records data on their consultations in the [TAILS database](http://www.pnas.org/content/112/52/15844.abstract), and one field of that database is 'take'. We have not previously analyzed the take field because that data is unstructured, but here we examine the take data more closely. The first 25 rows of the data we're using are in the table below, but are only a small selection of the consultations. To see an example of the problems with FWS's take data, scroll right to view the `take` column and look at the first row of the table: take was recorded as just "4," with no indication of the units:
+
+```{r tab1, echo=FALSE, warning=FALSE, error=FALSE}
+sample <- head(full[full$with_take == 1, ], 25)
+# DT::datatable(sample, options = list(pageLength = 25))
+sample
+```
+
+# Missing Data
+
+### The great majority of formal consultations do not have take data recorded.
+
+The dataset we're using includes 6982 formal consultations for 826 species. The effects determinations are made on a consultation-by-species basis, which results in 12,569 records.
+
+The first thing we see is that only 1,836 records (14.6%) have take recorded. Not all species in a consulation are likely to be adversely affected (LAA), and for those species there would be no take statement (n = 4,807). Using this smaller number as the denominator, take has been recorded for only 36.1% of records that _should_ have take recorded. _Simply recording the take authorized for individual projects is fundamental_ to being able to tally total authorized take across projects.
+
+```{r, cache = TRUE, echo=FALSE, warning=FALSE, error=FALSE}
+with_det <- regexpr(full$BO_determ, pattern = "[Jj]eop|Modifi|Formal Consul")
+
+full$with_det <- ifelse(!is.na(with_det) & with_det != -1, 1, 0)
+
+cols <- viridis(2)
+cols <- substr(cols, 0, 7)
+
+cur_dat <- table(full$with_det, full$with_take)
+colnames(cur_dat) <- c("no take recorded", "take recorded")
+row.names(cur_dat) <- c("no LAA determination", "LAA determination")
+aplot <- plot_ly(x = colnames(cur_dat), 
+                 y = cur_dat[1,], 
+                 type = "bar",
+                 name = "no LAA",
+                 marker = list(color=cols[1]))
+bplot <- add_trace(aplot, 
+                   x = colnames(cur_dat), 
+                   y = cur_dat[2,],
+                   type = "bar",
+                   name = "LAA",
+                   marker = list(color=cols[2]))
+fluidPage(
+  fluidRow(
+    column(12,
+       layout(bplot, barmode = "stack",
+       title = "Records with take recorded and whether needed (LAA)",
+       xaxis = list(title = ""), 
+       yaxis = list(title = "# records"))
+    )
+  )
+)
+```
+
+Notice that take was recorded in 103 instances in which the recorded determination was _not_ LAA. This shows that the data in TAILS contain inconsistencies that should be addressed.
+
+# FWS Office
+
+### Whether take is recorded depends on the FWS office doing the consultation. 
+
+In [another working paper](https://defend-esc-dev.org/working_papers/coordinates.html) we found that whether consultations had geographic coordinates for an action depended strongly on the field office doing the consultation. We see a similar pattern here. Some offices, like the New England and the Alabama Ecological Services Field Offices, have more records with take recorded than not. In contrast, offices such as South Florida, Utah, Columbus, and Ventura do many formal consultations, but for less than 5% can we tell the amount of authorized take.
+
+Here are the offices in descending order of the _proportion_ of records with take recorded.
+
+```{r, cache = TRUE, echo=FALSE, warning=FALSE, error=FALSE}
+datt <- table(full$ESOffice, full$with_take)
+dat <- data.frame(office = row.names(datt),
+                  without = datt[,1],
+                  with = datt[,2])
+dat$ratio <- dat$with / (dat$with + dat$without)
+dat <- dat[order(-dat$ratio), ]
+
+cols <- viridis(2)
+cols <- substr(cols, 0, 7)
+
+fluidPage(
+  fluidRow(
+    column(12,
+      highchart() %>% 
+        hc_xAxis(categories = dat$office,
+                 title = list(text = "Field Office")) %>%
+        hc_yAxis(title = list(text = "# records")) %>% 
+        hc_add_series(name = "No", data = dat$without, type = "column") %>%
+        hc_add_series(name = "Yes", data = dat$with, type = "column") %>%
+        hc_title(text = "Records with and without take recorded by field office",
+                 margin = 20) %>%
+        hc_legend(title = list(text = "Take recorded"),
+                               layout = "vertical",
+                               align = "left",
+                               verticalAlign = "top") %>%
+        hc_colors(cols) %>%
+        hc_tooltip(crosshairs = TRUE, 
+                   backgroundColor = "#FCFFC5",
+                   split = FALSE,
+                   shared = TRUE, 
+                   borderWidth = 0) %>%
+        hc_exporting(enabled = TRUE)
+    )
+  )
+)
+```
+
+# Time Component
+
+### Recording take may have tailed off over time.
+
+Most field offices have so few instances of recording take that there is no pattern. But the Sacramento office, which recorded take more than any other office, shows a strong decline in the rate at which they recorded take. The Washington (state) field office peaked recording take in 2010, but has since tapered off. We hypothesize that consultation biologists may have realized that because the take data is unstructured it is too difficult to make use of.
+
+```{r, cache = TRUE, echo=FALSE, warning=FALSE, error=FALSE}
+
+dat <- full[full$with_take == 1 & full$FY >= 2008, c(2, 3)]
+datt = table(dat$FY, dat$ESOffice)
+dat2 <- as.matrix(datt)
+
+fluidPage(
+  fluidRow(
+    column(12,
+      plot_ly(z = dat2,
+              type = "heatmap",
+              x = colnames(dat2),
+              y = row.names(dat2),
+              colors = viridis(7)) %>%
+      layout(title = "Take recorded by fiscal year and field office",
+             xaxis = list(title = "", tickangle = 45), 
+             yaxis = list(title = "Fiscal Year"), 
+             legend = list(title = "# records"),
+             margin = list(b = 250))
+    )
+  )
+)
+```
+
+Hover over squares to get values, and note that you can zoom in to particular sections by clicking and dragging a box.
+
+# Describing Take
+
+### Habitat and area are common descriptors of authorized take.
+
+FWS recently formalized their practice of using proxies of numbers of individuals in ITSs, such as describing take in terms of acres of habitat. A simple analysis illustrated with a wordcloud shows this has been FWS's practice even without the formal policy. Also notice the prominence of 'harassment': some significant portion of ITSs are recognizing non-lethal forms of take. 
+
+```{r, cache = TRUE, echo=FALSE, warning=FALSE, error=FALSE}
+cols <- viridis(5, 1)
+cols <- substr(cols, 0, 7)
+
+terms <- Corpus(VectorSource(sample(full[full$with_take == 1, ]$take, 1000)))
+desc <- tm_map(terms, removePunctuation)
+desc <- tm_map(desc, function(x){ removeWords(x, stopwords()) })
+desc <- tm_map(desc, function(x){ removeWords(x, c("the", "incidental", "take")) })
+tdm <- TermDocumentMatrix(desc)
+tdm <- removeSparseTerms(tdm, 0.99)
+m <- as.matrix(tdm)
+v <- sort(rowSums(m), decreasing = TRUE)
+d <- data.frame(word = names(v), freq = v)
+d <- d %>% 
+     tbl_df() %>%
+     arrange(desc(freq)) %>% 
+     head(100)
+
+words <- d$word
+freqs <- d$freq
+    
+fluidPage(
+  fluidRow(
+    column(12,
+      wordcloud(
+        words,
+        freqs,
+        random.color = TRUE
+      ) 
+      # d3wordcloud(words,
+      #             freqs,
+      #             rotate.min = 0,
+      #             rotate.max = 0,
+      #             spiral = "rectangular",
+      #             tooltip = TRUE)
+    )
+  )
+)
+```
+
+Word size is proportional to its frequency in the take data. The word cloud is based on the frequency of the top 100 words, minus common words (e.g., [stopwords](https://en.wikipedia.org/wiki/Stop_words)), numbers, and the terms 'incidental' and 'take', which are uninformative. 45 records include only a number (no units and no additional context) for take.
+
+# Sufficient Data?
+
+### Even the species with the most data is insufficient for inference.
+
+There is not much that we can learn about previously authorized take, even for the species that has had take recorded (n = 231) more than any other species, bull trout (_Salvelinus confluentus_). The most-used take entries (top-left) are wholly insufficient. (How can there be adverse effects with no take when 'harm,' a component of take, can be defined as an adverse effect?) A decent number of take descriptions use measurable units in their text, but a brief perusal of the data indicates that the linear distance matches are often describing a distance from the action, not an amount lost. 
+
+```{r, cache = TRUE, echo=FALSE, warning=FALSE, error=FALSE}
+sub <- full[full$BO_species == "Bull Trout (Salvelinus confluentus)" & full$with_take == 1, ]
+sub$take <- tolower(sub$take)
+top_take <- sort(table(sub$take), decreasing = TRUE)
+top_take <- data_frame(take = names(top_take), count = as.vector(top_take))
+top_take <- head(top_take, 8)
+
+plot_a <- plot_ly(x = top_take$take,
+                  y = top_take$count, 
+                  type = "bar",
+                  marker = list(color = substr(viridis(1), 0, 7))) %>%
+          layout(xaxis = list(title = "", tickangle = 45), 
+                 yaxis = list(title = "# instances"), 
+                 margin = list(b = 200))
+
+n_mile <- length(grep(x = sub$take, pattern = "mile|feet|ft\\."))
+n_acre <- length(grep(x = sub$take, pattern = "acre|ac\\."))
+n_indi <- length(grep(x = sub$take, pattern = "individual|ind\\."))
+n_stress <- length(grep(x = sub$take, pattern = "stress|subleth"))
+n_redd <- length(grep(x = sub$take, pattern = "redd"))
+lens <- c(n_mile, n_acre, n_indi, n_stress, n_redd)
+patt <- c("mile | feet", "acre | ac.", "individual | ind.", "stress | subleth", "redd")
+
+plot_b <- plot_ly(x = patt,
+                  y = lens,
+                  type = "bar",
+                  marker = list(color = substr(viridis(1), 0, 7))) %>%
+          layout(xaxis = list(title = ""), 
+                 yaxis = list(title = "# instances"), 
+                 margin = list(b = 200))
+
+afun <- function(x) {
+    q <- strsplit(x, split = " - ")
+    return(q[[1]][1])
+}
+
+sub$work_cat <- sapply(sub$work_type, FUN = afun)
+top_work <- sort(table(sub$work_cat), decreasing = TRUE)
+top_work <- data.frame(work = names(top_work), count = as.vector(top_work))
+top_work <- head(top_work, 12)
+
+plot_c <- plot_ly(x = top_work$work, 
+                  y = top_work$count, 
+                  type = "bar",
+                  marker = list(color = substr(viridis(1), 0, 7))) %>%
+          layout(xaxis = list(title = "", tickangle = 45), 
+                 yaxis = list(title = "# instances"), 
+                 margin = list(b = 150))
+
+top_agency <- sort(table(sub$lead_agency), decreasing = TRUE)
+top_agency <- data.frame(ag = names(top_agency), count = as.vector(top_agency))
+top_agency <- head(top_agency, 5)
+
+plot_d <- plot_ly(x = top_agency$ag, 
+                  y = top_agency$count, 
+                  type = "bar",
+                  marker = list(color = substr(viridis(1), 0, 7))) %>%
+          layout(xaxis = list(title = "", tickangle = 45), 
+                 yaxis = list(title = "# instances"), 
+                 margin = list(b = 150))
+
+fluidPage(
+  fluidRow(
+    column(12,
+      subplot(plot_a, plot_b, margin = 0.05, nrows = 1) %>%
+          layout(title = "Top take statements and key words about take",
+                 showlegend = FALSE)
+    )
+  )
+)
+```
+
+
+# Conclusion
+
+Although we cannot estimate the total amount of take that has been authorized for any species using the data FWS has recorded in the TAILS database, we can learn from this data. 
+
+- _First and foremost_, the Service needs to require that take is recorded for formal consultations. (And that goes for NE/NLAA determinations too; the take field should be 'Not Applicable'.) Without data there is nothing that can possibly be analyzed.
+
+- _Second_, the Service needs to provide detailed guidance as to how take is recorded. Free-form descriptions will always be sub-par, and details of acres, numbers, feet, duration of effects, and so-forth are needed. 
+
+- _Third, and where the rubber meets the road_, the Service needs to train and require personnel to use take data when evaluating the environmental baseline in consultations _and_ when conducting five-year status reviews. 
+
+Without knowing how much is being 'given away' under section 7, the Service cannot know when to apply the brakes on authorized take. And without that knowledge, they are only making it harder to recover species that are approaching the brink through completely legal losses.
+
+<br><br>
+
+------
+
+<br><br>
+
+```{r footer, echo=FALSE, warning=FALSE, error=FALSE}
+fluidPage(
+  fluidRow(
+    column(2),
+    column(8, 
+      div(
+        HTML('<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"> <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a> <br /> This <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" rel="dct:type">work</span> by <a xmlns:cc="http://creativecommons.org/ns" href="http://defenders.org" property="cc:attributionName" rel="cc:attributionURL">Defenders of Wildlife</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. <br />'),
+                           style = "text-align: center"
+      )
+    ),
+    column(2)
+  )
+)
+```
+

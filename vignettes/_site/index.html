@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Defenders of Wildlife" />
+
+<meta name="date" content="2017-03-17" />
+
+<title>ESA Section 7 Take Data from FWS</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.7/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.7/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<script src="site_libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<link href="site_libs/plotlyjs-1.16.3/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotlyjs-1.16.3/plotly-latest.min.js"></script>
+<script src="site_libs/plotly-binding-4.5.6/plotly.js"></script>
+<link href="site_libs/highcharts-5.0.6/css/motion.css" rel="stylesheet" />
+<script src="site_libs/highcharts-5.0.6/highstock.js"></script>
+<script src="site_libs/highcharts-5.0.6/highcharts-3d.js"></script>
+<script src="site_libs/highcharts-5.0.6/highcharts-more.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/annotations.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/broken-axis.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/data.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/drilldown.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/exporting.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/funnel.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/heatmap.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/map.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/no-data-to-display.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/offline-exporting.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/solid-gauge.js"></script>
+<script src="site_libs/highcharts-5.0.6/modules/treemap.js"></script>
+<script src="site_libs/highcharts-5.0.6/plugins/annotations.js"></script>
+<script src="site_libs/highcharts-5.0.6/plugins/draggable-legend.js"></script>
+<script src="site_libs/highcharts-5.0.6/plugins/draggable-points.js"></script>
+<script src="site_libs/highcharts-5.0.6/plugins/export-csv.js"></script>
+<script src="site_libs/highcharts-5.0.6/plugins/grouped-categories.js"></script>
+<script src="site_libs/highcharts-5.0.6/plugins/motion.js"></script>
+<script src="site_libs/highcharts-5.0.6/plugins/pattern-fill-v2.js"></script>
+<script src="site_libs/highcharts-5.0.6/plugins/tooltip-delay.js"></script>
+<script src="site_libs/highcharts-5.0.6/custom/reset.js"></script>
+<script src="site_libs/highcharts-5.0.6/custom/symbols-extra.js"></script>
+<script src="site_libs/highcharts-5.0.6/custom/text-symbols.js"></script>
+<link href="site_libs/fontawesome-4.5.0/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/htmlwdgtgrid-1/htmlwdgtgrid.css" rel="stylesheet" />
+<script src="site_libs/highchart-binding-0.4.0.9999/highchart.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="custom.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Section 7 Take</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="https://cci-dev.org">CCI-dev</a>
+</li>
+<li>
+  <a href="http://www.defenders.org">Defenders</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:esa@defenders.org">
+    <span class="fa fa-question-circle fa-lg"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-share-alt fa-lg"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://twitter.com/share?text=Defenders%20of%20Wildlife:%20Section%207%20Take&amp;url=https://cci-dev.org/analysis/section7_take/">
+        <span class="fa fa-twitter"></span>
+         
+        Twitter
+      </a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?s=100&amp;p[url]=https://cci-dev.org/analysis/section7_take/">
+        <span class="fa fa-facebook"></span>
+         
+        Facebook
+      </a>
+    </li>
+    <li>
+      <a href="https://pinterest.com/pin/create/link/?url=https://cci-dev.org/analysis/section7_take/&amp;description=Defenders%20of%20Wildlife:%20Section%207%20Take">
+        <span class="fa fa-pinterest"></span>
+         
+        Pinterest
+      </a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="https://github.com/jacob-ogre/section7_take">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">ESA Section 7 Take Data from FWS</h1>
+<h4 class="author"><em>Defenders of Wildlife</em></h4>
+<h4 class="date"><em>2017-03-17</em></h4>
+
+</div>
+
+
+<script async defer src="https://hypothes.is/embed.js"></script>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Section 7(a)(2) of the US Endangered Species Act (ESA) directs federal agencies to consult with the <a href="https://www.fws.gov">US Fish and Wildlife Service (FWS)</a> and/or <a href="http://www.nmfs.noaa.gov/">National Marine Fisheries Service (NMFS)</a> if an action they fund, permit, or carry out may affect ESA-listed species. If an action is likely to adversely affect (LAA) one or more ESA-listed species, then ‘formal consultation’ is required. As part of formal consultation, FWS or NMFS may provide in their Biological Opinion an Incidental Take Statement (ITS) that stipulates the kind and amount of <a href="http://www.nmfs.noaa.gov/pr/pdfs/laws/esa_section3.pdf">take</a> - such as harming, harassing, or killing of a listed species - that is expected and authorized for the action. Tracking take is <strong>critical</strong> to understanding how much habitat and how many individuals are allowed to be lost through completely legal means.</p>
+<p>FWS records data on their consultations in the <a href="http://www.pnas.org/content/112/52/15844.abstract">TAILS database</a>, and one field of that database is ‘take’. We have not previously analyzed the take field because that data is unstructured, but here we examine the take data more closely. The first 25 rows of the data we’re using are in the table below, but are only a small selection of the consultations. To see an example of the problems with FWS’s take data, scroll right to view the <code>take</code> column and look at the first row of the table: take was recorded as just “4,” with no indication of the units:</p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["region"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ESOffice"],"name":[2],"type":["chr"],"align":["left"]},{"label":["FY"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["activity_code"],"name":[4],"type":["chr"],"align":["left"]},{"label":["title"],"name":[5],"type":["chr"],"align":["left"]},{"label":["lead_agency"],"name":[6],"type":["chr"],"align":["left"]},{"label":["BO_species"],"name":[7],"type":["chr"],"align":["left"]},{"label":["BO_determ"],"name":[8],"type":["chr"],"align":["left"]},{"label":["CH"],"name":[9],"type":["chr"],"align":["left"]},{"label":["CH_flag"],"name":[10],"type":["chr"],"align":["left"]},{"label":["take"],"name":[11],"type":["chr"],"align":["left"]},{"label":["work_type"],"name":[12],"type":["chr"],"align":["left"]},{"label":["with_take"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"IDAHO FISH AND WILDLIFE OFFICE","3":"2012","4":"01EIFW00-2012-F-0153","5":"Mill Creek Council Mountain Project in the Weiser River","6":"Forest Service","7":"Bull Trout (Salvelinus confluentus)","8":"Non-jeopardy","9":"No Adverse Modification","10":"Yes","11":"4","12":"AGRICULTURE","13":"1"},{"1":"1","2":"IDAHO FISH AND WILDLIFE OFFICE","3":"2012","4":"01EIFW00-2012-F-0159","5":"NIFO - Trestle Creek Bridge Replacement Project","6":"Army Corps of Engineers","7":"Bull Trout (Salvelinus confluentus)","8":"Non-jeopardy","9":"No Adverse Modification","10":"Yes","11":"Take associated with this action was already analyzed and exempted pursuant to formal consultation with Federal Highways completed on June 5, 2007 (FWS Reference # 1-9-07-F-0019).","12":"Bridge - Maintenance / Modification / Replacement / Upgrade - Federal","13":"1"},{"1":"1","2":"IDAHO FISH AND WILDLIFE OFFICE","3":"2012","4":"01EIFW00-2012-F-0243","5":"IFWO-McPherson Allotment Livestock Grazing Permit","6":"Bureau of Land Management","7":"Slickspot peppergrass (Lepidium papilliferum)","8":"Non-jeopardy","9":"No Adverse Modification","10":"Yes","11":"N/A - No take for plants","12":"Agriculture - Grazing - Permit Renewal - Cattle","13":"1"},{"1":"1","2":"IDAHO FISH AND WILDLIFE OFFICE","3":"2012","4":"01EIFW00-2012-F-0269","5":"EIFO 12 - Forney Grazing Allotment","6":"Forest Service","7":"Bull Trout (Salvelinus confluentus)","8":"Non-jeopardy","9":"NLAA - Concurrence Provided","10":"Yes","11":"5-30 bull trout redds","12":"Agriculture - Grazing - Ongoing Activities - Cattle","13":"1"},{"1":"1","2":"IDAHO FISH AND WILDLIFE OFFICE","3":"2013","4":"01EIFW00-2013-F-0185","5":"IFWO Effectiveness of Forest Restoration Treatments; Issuance of a FWS Section 10 Recovery Permit","6":"Fish and Wildlife Service","7":"Northern Idaho ground squirrel (Spermophilus brunneus brunneus)","8":"Non-jeopardy","9":"NA","10":"No","11":"Take for capture/handling, PIT tagging, roadio-collaring, and anesthetizing with isoflurane","12":"Recovery Permit - Research - collection/handling","13":"1"},{"1":"1","2":"IDAHO FISH AND WILDLIFE OFFICE","3":"2014","4":"01EIFW00-2014-F-0336","5":"IFWO Pole Creek Diversion Authorization (Sawtooth National Forest)","6":"Forest Service","7":"Bull Trout (Salvelinus confluentus)","8":"Non-jeopardy / No Adverse Mod","9":"Non-jeopardy / No Adverse Mod","10":"Yes","11":"600 feet of Pole Creek downstream of diversion structure","12":"Stream / Waterbody - Channel / Diversion Structures","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2012","4":"01EOFW00-2012-F-0004","5":"Dalles Watershed Phase II","6":"Forest Service","7":"Northern spotted owl (Strix occidentalis caurina)","8":"Non-jeopardy","9":"NA","10":"No","11":"no additional take authorized","12":"FORESTRY","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2012","4":"01EOFW00-2012-F-0038","5":"Recovery Permit Issuance to Lower Columbia River Fish Health Center","6":"Fish and Wildlife Service","7":"Warner sucker (Catostomus warnerensis)","8":"Non-jeopardy / No Adverse Mod","9":"Non-jeopardy / No Adverse Mod","10":"Yes","11":"Lethal take of Warner sucker by Servie biologist to determine overall health of Warner sucker throughout their range. Take is estimated to be 20 Warner sucker per sample site, not to exceed one percent of each \"sub\" population per year of sampling. There are three proposed \"sub\" populations in the Warner Valley, therefore, take shall not exceed 30  stream form Warner sucker and 5 lake form Warner sucker,  not to exceed one percent of the population, each calender year.","12":"Recovery Permit - Research - collection/handling","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2012","4":"01EOFW00-2012-F-0085","5":"Oregon DEQ Statewide Fish Surveys (Recovery Permit TE012136-4)","6":"Oregon Department of Environmental Quality","7":"Modoc Sucker (Catostomus microps)","8":"Non-jeopardy","9":"No Effect - No Concurrence Required","10":"Yes","11":"zero incidental take","12":"RECOVERY PERMIT","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2012","4":"01EOFW00-2012-F-0103","5":"GPRA FY 2012-13 Formal","6":"Bureau of Land Management","7":"Northern spotted owl (Strix occidentalis caurina)","8":"Non-jeopardy / No Adverse Mod","9":"Non-jeopardy / No Adverse Mod","10":"Yes","11":"no take authorized","12":"Forestry - Timber Sale","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2013","4":"01EOFW00-2013-F-0003","5":"Stahl H.B. and JSH Farms River Pumping Stations Modification Project","6":"Army Corps of Engineers","7":"Bull Trout (Salvelinus confluentus)","8":"Non-jeopardy","9":"Non-jeopardy / No Adverse Mod","10":"Yes","11":"The amount of sub-lethal and lethal take for bull trout, regardless of the life stage (i.e., juvenile, sub-adult, or adult) for all project-related activities is limited to ten individuals as sub-lethal take through harm and harassment and zero individuals through any manner of lethal take.","12":"WATER SUPPLY / DELIVERY","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2013","4":"01EOFW00-2013-F-0040","5":"Middle Fork Kokwel formal consultation","6":"Coquille Tribe of Oregon","7":"Marbled murrelet (Brachyramphus marmoratus)","8":"Non-jeopardy","9":"Not Required - See Event Description","10":"Yes","11":"1 murrelet nest","12":"Forestry - Timber Sale","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2013","4":"01EOFW00-2013-F-0040","5":"Middle Fork Kokwel formal consultation","6":"Coquille Tribe of Oregon","7":"Northern spotted owl (Strix occidentalis caurina)","8":"Non-jeopardy","9":"Not Required - See Event Description","10":"Yes","11":"8 adult and 6 juvenile spotted owls","12":"Forestry - Timber Sale","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2013","4":"01EOFW00-2013-F-0096","5":"Reinitiation of 11 Timber Sales Willamette NF 2013","6":"Forest Service","7":"Northern spotted owl (Strix occidentalis caurina)","8":"Non-jeopardy / No Adverse Mod","9":"Non-jeopardy / No Adverse Mod","10":"Yes","11":"3 pairs (MSNO#s 0682, 2449 and 2886","12":"Forestry - Harvest","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2013","4":"01EOFW00-2013-F-0124","5":"Borax Lake Chub Section 10(a)(1)(A) Recovery Permit Programmatic Biological Opinion","6":"Fish and Wildlife Service","7":"Borax Lake chub (Gila boraxobius)","8":"Non-jeopardy","9":"No Adverse Modification","10":"Yes","11":"The amount of incidental injury and mortality to Borax Lake chub, regardless of the life stage (i.e., larval, juvenile, or adult), for all authorized recovery permit-related activities is limited to 0.5 percent of the total estimated chub population (for all sex and/or age groups combined) per calendar year.  This would typically range between 41 and 134 individual chub, based on past chub population estimates over the past eight years. The Service is conservatively estimating that up to 25 percent of the Borax Lake chub population (i.e., any combination of sex and/or age group) may be harassed during any in-water activity and up to 10 percent during any other activity occurring near the lake shoreline or wetland perimeter.","12":"RECOVERY PERMIT","13":"1"},{"1":"1","2":"OREGON FISH AND WILDLIFE OFFICE","3":"2013","4":"01EOFW00-2013-F-0128","5":"Warner Sucker Section 10(a)(1)(A) Recovery Permit Programmatic Biological Opinion","6":"Fish and Wildlife Service","7":"Warner sucker (Catostomus warnerensis)","8":"Non-jeopardy","9":"No Adverse Modification","10":"Yes","11":"The amount of take is based on separate estimates for the Summer Lake Basin and Warner Basin by life stage.  The maximum take limitations (i.e., by life stage for injuries or mortalities) that would be authorized under all current active recovery permits in Oregon on a calendar year basis are as follows: Summer Lake Basin (50 larvae and 10 adults) and Warner Basin (175 larvae and 35 adults). Up to 40 percent of the Warner suckers in each of the Summer Lake Basin and Warner Basin populations (i.e., any combination of sex and/or life stage) may be harassed during a calendar year.","12":"RECOVERY PERMIT","13":"1"},{"1":"1","2":"PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","3":"2012","4":"01EPIF00-2012-F-0032","5":"Memorandum of Agreement for the Rota Agricultural Homesteads, CNMI","6":"Fish and Wildlife Service","7":"Mariana (=aga) Crow (Corvus kubaryi)","8":"Non-jeopardy","9":"NLAA - Concurrence Provided","10":"Yes","11":"Up to one Mariana crow pair and 2 juveniles may be harmed through habitat clearing associated with development of agricultural homesteads.  Up to one Mariana crow pair and one nest may be harmed or injured per five years due to noise or other disturbance from agricultural homesteads.","12":"AGRICULTURE","13":"1"},{"1":"1","2":"PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","3":"2012","4":"01EPIF00-2012-F-0088","5":"San Roque property Saipan Upland Mitigation Bank purchase, Saipan","6":"-- OTHER NON-FEDERAL AGENCY --","7":"Nightingale reed warbler (old world warbler) (Acrocephalus luscinia)","8":"Non-jeopardy / No Adverse Mod","9":"NA","10":"No","11":"Harassment of up to two adults, four juveniles","12":"DEVELOPMENT","13":"1"},{"1":"1","2":"PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","3":"2012","4":"01EPIF00-2012-F-0261","5":"Amendment to the 2007 Biological Opinion for Army Training at Makua Military Reservation, Oahu","6":"Department of Defense (DOD) - Army","7":"Oahu Elepaio (Chasiempis sandwichensis ibidis)","8":"Non-jeopardy","9":"No Adverse Modification","10":"Yes","11":"June 28, 2002, the Army wrote a letter to the Service concluding that a fire that occurred outside the fire break road at SBMR did not jeopardize any listed species or adversely modify critical habitat   even though 2.5 ha (6.8 ac) of elepaio critical habitat and 4.5 ha (11.1 ac) of proposed Oahu plant critical habitat was burned.   On August 19, 2003, a second fire occurred at SBMR started by a 40 mm round that was fired  during an inappropriate time pursuant to the Fire Danger Rating System.  This fire burned  approximately 2.8 ha (7 ac) outside of the impact area and portions of two Oahu elepaio territories  were impacted.","12":"MILITARY OPERATIONS / MANEUVERS","13":"1"},{"1":"1","2":"PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","3":"2012","4":"01EPIF00-2012-F-0294","5":"Biological Opinion for Recovery Permit related to Koloa Trapping, Hanalei Refuge, Kauai","6":"Fish and Wildlife Service","7":"Hawaiian common moorhen (Gallinula chloropus sandvicensis)","8":"Non-jeopardy","9":"NA","10":"No","11":"(0 authorized).  Two dead moorhens.  The first was in 2011; the 2nd was on May 14, 2012, and was an adult female (see events for autopsy results).","12":"RECOVERY PERMIT","13":"1"},{"1":"1","2":"PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","3":"2012","4":"01EPIF00-2012-F-0294","5":"Biological Opinion for Recovery Permit related to Koloa Trapping, Hanalei Refuge, Kauai","6":"Fish and Wildlife Service","7":"Hawaiian coot (Fulica americana alai)","8":"Non-jeopardy","9":"NA","10":"No","11":"(0 authorized).  None reported.","12":"RECOVERY PERMIT","13":"1"},{"1":"1","2":"PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","3":"2012","4":"01EPIF00-2012-F-0294","5":"Biological Opinion for Recovery Permit related to Koloa Trapping, Hanalei Refuge, Kauai","6":"Fish and Wildlife Service","7":"Hawaiian goose (Branta (=Nesochen) sandvicensis)","8":"Non-jeopardy","9":"NA","10":"No","11":"(0 authorized).  None reported.","12":"RECOVERY PERMIT","13":"1"},{"1":"1","2":"PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","3":"2012","4":"01EPIF00-2012-F-0294","5":"Biological Opinion for Recovery Permit related to Koloa Trapping, Hanalei Refuge, Kauai","6":"Fish and Wildlife Service","7":"Hawaiian (=koloa) Duck (Anas wyvilliana)","8":"Non-jeopardy","9":"NA","10":"No","11":"(0 authorized).  1 injury to an adult's bill in 2011.  The bird was re-captured in good body condition several months later.","12":"RECOVERY PERMIT","13":"1"},{"1":"1","2":"PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","3":"2012","4":"01EPIF00-2012-F-0294","5":"Biological Opinion for Recovery Permit related to Koloa Trapping, Hanalei Refuge, Kauai","6":"Fish and Wildlife Service","7":"Hawaiian stilt (Himantopus mexicanus knudseni)","8":"Non-jeopardy","9":"NA","10":"No","11":"(0 authorized).  None reported.","12":"RECOVERY PERMIT","13":"1"},{"1":"1","2":"WASHINGTON FISH AND WILDLIFE OFFICE","3":"2012","4":"01EWFW00-2012-F-0014","5":"QIN NB-09-09 John Lemieux Cedar Salvage PCF","6":"Bureau of Indian Affairs","7":"Bull Trout (Salvelinus confluentus)","8":"Non-jeopardy","9":"NA","10":"No","11":"Take of bull trout (harassment) associated with cedar salvage in riparian areas along 15,000+ ft of small, non-fish bearing tributary streams to bull trout foraging, migration, and overwintering habitat in the South Fork Salmon River.","12":"Forestry - Timber Sale","13":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="missing-data" class="section level1">
+<h1>Missing Data</h1>
+<div id="the-great-majority-of-formal-consultations-do-not-have-take-data-recorded." class="section level3">
+<h3>The great majority of formal consultations do not have take data recorded.</h3>
+<p>The dataset we’re using includes 6982 formal consultations for 826 species. The effects determinations are made on a consultation-by-species basis, which results in 12,569 records.</p>
+<p>The first thing we see is that only 1,836 records (14.6%) have take recorded. Not all species in a consulation are likely to be adversely affected (LAA), and for those species there would be no take statement (n = 4,807). Using this smaller number as the denominator, take has been recorded for only 36.1% of records that <em>should</em> have take recorded. <em>Simply recording the take authorized for individual projects is fundamental</em> to being able to tally total authorized take across projects.</p>
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+<div id="htmlwidget-d72aa0d4abfd0f1ecedf" style="width:100%;height:400px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d72aa0d4abfd0f1ecedf">{"x":{"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"barmode":"stack","title":"Records with take recorded and whether needed (LAA)","xaxis":{"domain":[0,1],"title":"","type":"category","categoryorder":"array","categoryarray":["no take recorded","take recorded"]},"yaxis":{"domain":[0,1],"title":"# records"}},"source":"A","config":{"modeBarButtonsToAdd":[{"name":"Collaborate","icon":{"width":1000,"ascent":500,"descent":-50,"path":"M487 375c7-10 9-23 5-36l-79-259c-3-12-11-23-22-31-11-8-22-12-35-12l-263 0c-15 0-29 5-43 15-13 10-23 23-28 37-5 13-5 25-1 37 0 0 0 3 1 7 1 5 1 8 1 11 0 2 0 4-1 6 0 3-1 5-1 6 1 2 2 4 3 6 1 2 2 4 4 6 2 3 4 5 5 7 5 7 9 16 13 26 4 10 7 19 9 26 0 2 0 5 0 9-1 4-1 6 0 8 0 2 2 5 4 8 3 3 5 5 5 7 4 6 8 15 12 26 4 11 7 19 7 26 1 1 0 4 0 9-1 4-1 7 0 8 1 2 3 5 6 8 4 4 6 6 6 7 4 5 8 13 13 24 4 11 7 20 7 28 1 1 0 4 0 7-1 3-1 6-1 7 0 2 1 4 3 6 1 1 3 4 5 6 2 3 3 5 5 6 1 2 3 5 4 9 2 3 3 7 5 10 1 3 2 6 4 10 2 4 4 7 6 9 2 3 4 5 7 7 3 2 7 3 11 3 3 0 8 0 13-1l0-1c7 2 12 2 14 2l218 0c14 0 25-5 32-16 8-10 10-23 6-37l-79-259c-7-22-13-37-20-43-7-7-19-10-37-10l-248 0c-5 0-9-2-11-5-2-3-2-7 0-12 4-13 18-20 41-20l264 0c5 0 10 2 16 5 5 3 8 6 10 11l85 282c2 5 2 10 2 17 7-3 13-7 17-13z m-304 0c-1-3-1-5 0-7 1-1 3-2 6-2l174 0c2 0 4 1 7 2 2 2 4 4 5 7l6 18c0 3 0 5-1 7-1 1-3 2-6 2l-173 0c-3 0-5-1-8-2-2-2-4-4-4-7z m-24-73c-1-3-1-5 0-7 2-2 3-2 6-2l174 0c2 0 5 0 7 2 3 2 4 4 5 7l6 18c1 2 0 5-1 6-1 2-3 3-5 3l-174 0c-3 0-5-1-7-3-3-1-4-4-5-6z"},"click":"function(gd) { \n        // is this being viewed in RStudio?\n        if (location.search == '?viewer_pane=1') {\n          alert('To learn about plotly for collaboration, visit:\\n https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html');\n        } else {\n          window.open('https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html', '_blank');\n        }\n      }"}],"modeBarButtonsToRemove":["sendDataToCloud"]},"data":[{"x":["no take recorded","take recorded"],"y":[7659,103],"name":"no LAA","marker":{"fillcolor":"rgba(31,119,180,1)","color":"#440154","line":{"color":"transparent"}},"type":"bar","xaxis":"x","yaxis":"y"},{"x":["no take recorded","take recorded"],"y":[3074,1733],"name":"LAA","marker":{"fillcolor":"rgba(255,127,14,1)","color":"#FDE725","line":{"color":"transparent"}},"type":"bar","xaxis":"x","yaxis":"y"}],"base_url":"https://plot.ly"},"evals":["config.modeBarButtonsToAdd.0.click"],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<p>Notice that take was recorded in 103 instances in which the recorded determination was <em>not</em> LAA. This shows that the data in TAILS contain inconsistencies that should be addressed.</p>
+</div>
+</div>
+<div id="fws-office" class="section level1">
+<h1>FWS Office</h1>
+<div id="whether-take-is-recorded-depends-on-the-fws-office-doing-the-consultation." class="section level3">
+<h3>Whether take is recorded depends on the FWS office doing the consultation.</h3>
+<p>In <a href="https://defend-esc-dev.org/working_papers/coordinates.html">another working paper</a> we found that whether consultations had geographic coordinates for an action depended strongly on the field office doing the consultation. We see a similar pattern here. Some offices, like the New England and the Alabama Ecological Services Field Offices, have more records with take recorded than not. In contrast, offices such as South Florida, Utah, Columbus, and Ventura do many formal consultations, but for less than 5% can we tell the amount of authorized take.</p>
+<p>Here are the offices in descending order of the <em>proportion</em> of records with take recorded.</p>
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+<div id="htmlwidget-5b488d4362620ea73a6d" style="width:100%;height:500px;" class="highchart html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5b488d4362620ea73a6d">{"x":{"hc_opts":{"title":{"text":"Records with and without take recorded by field office","margin":20},"yAxis":{"title":{"text":"# records"}},"credits":{"enabled":false},"exporting":{"enabled":true},"plotOptions":{"series":{"turboThreshold":0},"treemap":{"layoutAlgorithm":"squarified"},"bubble":{"minSize":5,"maxSize":25}},"annotationsOptions":{"enabledButtons":false},"tooltip":{"delayForDisplay":10,"crosshairs":true,"backgroundColor":"#FCFFC5","split":false,"shared":true,"borderWidth":0},"xAxis":{"categories":["NEW ENGLAND ECOLOGICAL SERVICES FIELD OFFICE","RALEIGH ECOLOGICAL SERVICES FIELD OFFICE","ALABAMA ECOLOGICAL SERVICES FIELD OFFICE","MAINE ECOLOGICAL SERVICES FIELD OFFICE","ANCHORAGE FISH AND WILDLIFE FIELD OFFICE","KLAMATH FALLS FISH AND WILDLIFE OFFICE","EAST LANSING ECOLOGICAL SERVICES FIELD OFFICE","WASHINGTON FISH AND WILDLIFE OFFICE","SAN FRANCISCO BAY - DELTA FISH AND WILDLIFE","CHESAPEAKE BAY ECOLOGICAL SERVICES FIELD OFFICE","AUSTIN ECOLOGICAL SERVICES FIELD OFFICE","SACRAMENTO FISH AND WILDLIFE OFFICE","ASSISTANT REGIONAL DIRECTOR-ECOLOGICAL SERVICES","MARION ECOLOGICAL SERVICES SUB-OFFICE","ROCK ISLAND ECOLOGICAL SERVICES FIELD OFFICE","TENNESSEE ECOLOGICAL SERVICES FIELD OFFICE","COLUMBIA ECOLOGICAL SERVICES FIELD OFFICE","WYOMING ECOLOGICAL SERVICES FIELD OFFICE","NEW MEXICO ECOLOGICAL SERVICES FIELD OFFICE","RED BLUFF FISH AND WILDLIFE OFFICE","MISSISSIPPI ECOLOGICAL SERVICES FIELD OFFICE","NEW JERSEY ECOLOGICAL SERVICES FIELD OFFICE","NORTH FLORIDA ECOLOGICAL SERVICES FIELD OFFICE","SOUTH CAROLINA ECOLOGICAL SERVICES","ARCATA FISH AND WILDLIFE OFFICE","LOUISIANA ECOLOGICAL SERVICES FIELD OFFICE","YREKA FISH AND WILDLIFE OFFICE","PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","CORPUS CHRISTI ECOLOGICAL SERVICES FIELD OFFICE","ASSISTANT REGIONAL DIRECTOR-CONSERVATION PARTNERSHIP","OREGON FISH AND WILDLIFE OFFICE","ARIZONA ECOLOGICAL SERVICES FIELD OFFICE","TWIN CITIES ECOLOGICAL SERVICES FIELD OFFICE","DIVISION OF CONSULTATION, HCPS, RECOVERY AND STATE GRANTS","ARLINGTON ECOLOGICAL SERVICES FIELD OFFICE","HOUSTON ECOLOGICAL SERVICES FIELD OFFICE","OKLAHOMA ECOLOGICAL SERVICES FIELD OFFICE","MONTANA ECOLOGICAL SERVICES FIELD OFFICE","PANAMA CITY ECOLOGICAL SERVICES FIELD OFFICE","CARLSBAD FISH AND WILDLIFE OFFICE","PENNSYLVANIA ECOLOGICAL SERVICES FIELD OFFICE","IDAHO FISH AND WILDLIFE OFFICE","FAIRBANKS FISH AND WILDLIFE FIELD OFFICE","KANSAS ECOLOGICAL SERVICES FIELD OFFICE","CENTRAL WASHINGTON FIELD OFFICE","KENTUCKY ECOLOGICAL SERVICES FIELD OFFICE","NEVADA FISH AND WILDLIFE OFFICE","CARIBBEAN ECOLOGICAL SERVICES FIELD OFFICE","ARKANSAS ECOLOGICAL SERVICES FIELD OFFICE","BLOOMINGTON ECOLOGICAL SERVICES FIELD OFFICE","WESTERN COLORADO ECOLOGICAL SERVICES FIELD OFFICE","UPPER COLUMBIA RIVER FISH AND WILDLIFE OFFICE","ASHEVILLE ECOLOGICAL SERVICES FIELD OFFICE","SOUTH FLORIDA ECOLOGICAL SERVICES FIELD OFFICE","UTAH ECOLOGICAL SERVICES FIELD OFFICE","NEBRASKA ECOLOGICAL SERVICES FIELD OFFICE","GEORGIA ECOLOGICAL SERVICES FIELD OFFICE","COLUMBUS ECOLOGICAL SERVICES FIELD OFFICE","COLORADO ECOLOGICAL SERVICES FIELD OFFICE","VENTURA FISH AND WILDLIFE OFFICE","CHICAGO ECOLOGICAL SERVICE FIELD OFFICE","GREEN BAY ECOLOGICAL SERVICES FIELD OFFICE","HOPPER MOUNTAIN NATIONAL WILDLIFE REFUGE COMPLEX","LONG ISLAND ECOLOGICAL SERVICES FIELD OFFICE","NEW YORK ECOLOGICAL SERVICES FIELD OFFICE","NORTH DAKOTA ECOLOGICAL SERVICES FIELD OFFICE","SOUTH DAKOTA ECOLOGICAL SERVICES FIELD OFFICE","SOUTHWESTERN VIRGINIA ECOLOGICAL SERVICES FIELD OFFICE","Texas Coastal Ecological Services Field Office","VIRGINIA ECOLOGICAL SERVICES FIELD OFFICE","WEST VIRGINIA ECOLOGICAL SERVICES FIELD OFFICE","WESTERN WASHINGTON FISHERIES RESOURCE OFFICE"],"title":{"text":"Field Office"}},"series":[{"data":[5,40,30,10,19,17,87,495,73,4,65,1413,17,29,26,143,28,223,84,8,60,64,303,30,71,59,6,151,67,36,325,343,42,175,11,45,162,131,177,519,59,317,108,18,111,175,360,41,25,25,283,28,30,966,560,95,52,557,374,550,2,67,1,21,21,26,171,9,1,69,16,1],"name":"No","type":"column"},{"data":[11,49,36,8,15,12,58,309,40,2,31,614,7,9,8,43,8,62,21,2,14,14,65,6,14,10,1,24,10,5,43,41,5,18,1,4,14,10,13,37,4,21,7,1,6,9,18,2,1,1,11,1,1,25,13,2,1,8,5,5,0,0,0,0,0,0,0,0,0,0,0,0],"name":"Yes","type":"column"}],"legend":{"title":{"text":"Take recorded"},"layout":"vertical","align":"left","verticalAlign":"top"},"colors":["#440154","#FDE725"]},"theme":{"chart":{"backgroundColor":"transparent"}},"conf_opts":{"global":{"Date":null,"VMLRadialGradientURL":"http =//code.highcharts.com/list(version)/gfx/vml-radial-gradient.png","canvasToolsURL":"http =//code.highcharts.com/list(version)/modules/canvas-tools.js","getTimezoneOffset":null,"timezoneOffset":0,"useUTC":true},"lang":{"contextButtonTitle":"Chart context menu","decimalPoint":".","downloadJPEG":"Download JPEG image","downloadPDF":"Download PDF document","downloadPNG":"Download PNG image","downloadSVG":"Download SVG vector image","drillUpText":"Back to {series.name}","invalidDate":null,"loading":"Loading...","months":["January","February","March","April","May","June","July","August","September","October","November","December"],"noData":"No data to display","numericSymbols":["k","M","G","T","P","E"],"printChart":"Print chart","resetZoom":"Reset zoom","resetZoomTitle":"Reset zoom level 1:1","shortMonths":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"thousandsSep":" ","weekdays":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]}},"type":"chart","fonts":[],"debug":false},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="time-component" class="section level1">
+<h1>Time Component</h1>
+<div id="recording-take-may-have-tailed-off-over-time." class="section level3">
+<h3>Recording take may have tailed off over time.</h3>
+<p>Most field offices have so few instances of recording take that there is no pattern. But the Sacramento office, which recorded take more than any other office, shows a strong decline in the rate at which they recorded take. The Washington (state) field office peaked recording take in 2010, but has since tapered off. We hypothesize that consultation biologists may have realized that because the take data is unstructured it is too difficult to make use of.</p>
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+<div id="htmlwidget-a748a7e465b64e34c9fa" style="width:100%;height:400px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a748a7e465b64e34c9fa">{"x":{"layout":{"margin":{"b":250,"l":60,"t":25,"r":10},"title":"Take recorded by fiscal year and field office","xaxis":{"domain":[0,1],"title":"","tickangle":45,"type":"category","categoryorder":"array","categoryarray":["ALABAMA ECOLOGICAL SERVICES FIELD OFFICE","ANCHORAGE FISH AND WILDLIFE FIELD OFFICE","ARCATA FISH AND WILDLIFE OFFICE","ARIZONA ECOLOGICAL SERVICES FIELD OFFICE","ARKANSAS ECOLOGICAL SERVICES FIELD OFFICE","ARLINGTON ECOLOGICAL SERVICES FIELD OFFICE","ASHEVILLE ECOLOGICAL SERVICES FIELD OFFICE","ASSISTANT REGIONAL DIRECTOR-CONSERVATION PARTNERSHIP","ASSISTANT REGIONAL DIRECTOR-ECOLOGICAL SERVICES","AUSTIN ECOLOGICAL SERVICES FIELD OFFICE","BLOOMINGTON ECOLOGICAL SERVICES FIELD OFFICE","CARIBBEAN ECOLOGICAL SERVICES FIELD OFFICE","CARLSBAD FISH AND WILDLIFE OFFICE","CENTRAL WASHINGTON FIELD OFFICE","CHESAPEAKE BAY ECOLOGICAL SERVICES FIELD OFFICE","COLORADO ECOLOGICAL SERVICES FIELD OFFICE","COLUMBIA ECOLOGICAL SERVICES FIELD OFFICE","COLUMBUS ECOLOGICAL SERVICES FIELD OFFICE","CORPUS CHRISTI ECOLOGICAL SERVICES FIELD OFFICE","DIVISION OF CONSULTATION, HCPS, RECOVERY AND STATE GRANTS","EAST LANSING ECOLOGICAL SERVICES FIELD OFFICE","FAIRBANKS FISH AND WILDLIFE FIELD OFFICE","GEORGIA ECOLOGICAL SERVICES FIELD OFFICE","HOUSTON ECOLOGICAL SERVICES FIELD OFFICE","IDAHO FISH AND WILDLIFE OFFICE","KANSAS ECOLOGICAL SERVICES FIELD OFFICE","KENTUCKY ECOLOGICAL SERVICES FIELD OFFICE","KLAMATH FALLS FISH AND WILDLIFE OFFICE","LOUISIANA ECOLOGICAL SERVICES FIELD OFFICE","MAINE ECOLOGICAL SERVICES FIELD OFFICE","MARION ECOLOGICAL SERVICES SUB-OFFICE","MISSISSIPPI ECOLOGICAL SERVICES FIELD OFFICE","MONTANA ECOLOGICAL SERVICES FIELD OFFICE","NEBRASKA ECOLOGICAL SERVICES FIELD OFFICE","NEVADA FISH AND WILDLIFE OFFICE","NEW ENGLAND ECOLOGICAL SERVICES FIELD OFFICE","NEW JERSEY ECOLOGICAL SERVICES FIELD OFFICE","NEW MEXICO ECOLOGICAL SERVICES FIELD OFFICE","NORTH FLORIDA ECOLOGICAL SERVICES FIELD OFFICE","OKLAHOMA ECOLOGICAL SERVICES FIELD OFFICE","OREGON FISH AND WILDLIFE OFFICE","PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","PANAMA CITY ECOLOGICAL SERVICES FIELD OFFICE","PENNSYLVANIA ECOLOGICAL SERVICES FIELD OFFICE","RALEIGH ECOLOGICAL SERVICES FIELD OFFICE","RED BLUFF FISH AND WILDLIFE OFFICE","ROCK ISLAND ECOLOGICAL SERVICES FIELD OFFICE","SACRAMENTO FISH AND WILDLIFE OFFICE","SAN FRANCISCO BAY - DELTA FISH AND WILDLIFE","SOUTH CAROLINA ECOLOGICAL SERVICES","SOUTH FLORIDA ECOLOGICAL SERVICES FIELD OFFICE","TENNESSEE ECOLOGICAL SERVICES FIELD OFFICE","TWIN CITIES ECOLOGICAL SERVICES FIELD OFFICE","UPPER COLUMBIA RIVER FISH AND WILDLIFE OFFICE","UTAH ECOLOGICAL SERVICES FIELD OFFICE","VENTURA FISH AND WILDLIFE OFFICE","WASHINGTON FISH AND WILDLIFE OFFICE","WESTERN COLORADO ECOLOGICAL SERVICES FIELD OFFICE","WYOMING ECOLOGICAL SERVICES FIELD OFFICE","YREKA FISH AND WILDLIFE OFFICE"]},"yaxis":{"domain":[0,1],"title":"Fiscal Year","type":"category","categoryorder":"array","categoryarray":["2008","2009","2010","2011","2012","2013","2014","2015","2016"]},"legend":{"title":"# records"},"showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":[{"name":"Collaborate","icon":{"width":1000,"ascent":500,"descent":-50,"path":"M487 375c7-10 9-23 5-36l-79-259c-3-12-11-23-22-31-11-8-22-12-35-12l-263 0c-15 0-29 5-43 15-13 10-23 23-28 37-5 13-5 25-1 37 0 0 0 3 1 7 1 5 1 8 1 11 0 2 0 4-1 6 0 3-1 5-1 6 1 2 2 4 3 6 1 2 2 4 4 6 2 3 4 5 5 7 5 7 9 16 13 26 4 10 7 19 9 26 0 2 0 5 0 9-1 4-1 6 0 8 0 2 2 5 4 8 3 3 5 5 5 7 4 6 8 15 12 26 4 11 7 19 7 26 1 1 0 4 0 9-1 4-1 7 0 8 1 2 3 5 6 8 4 4 6 6 6 7 4 5 8 13 13 24 4 11 7 20 7 28 1 1 0 4 0 7-1 3-1 6-1 7 0 2 1 4 3 6 1 1 3 4 5 6 2 3 3 5 5 6 1 2 3 5 4 9 2 3 3 7 5 10 1 3 2 6 4 10 2 4 4 7 6 9 2 3 4 5 7 7 3 2 7 3 11 3 3 0 8 0 13-1l0-1c7 2 12 2 14 2l218 0c14 0 25-5 32-16 8-10 10-23 6-37l-79-259c-7-22-13-37-20-43-7-7-19-10-37-10l-248 0c-5 0-9-2-11-5-2-3-2-7 0-12 4-13 18-20 41-20l264 0c5 0 10 2 16 5 5 3 8 6 10 11l85 282c2 5 2 10 2 17 7-3 13-7 17-13z m-304 0c-1-3-1-5 0-7 1-1 3-2 6-2l174 0c2 0 4 1 7 2 2 2 4 4 5 7l6 18c0 3 0 5-1 7-1 1-3 2-6 2l-173 0c-3 0-5-1-8-2-2-2-4-4-4-7z m-24-73c-1-3-1-5 0-7 2-2 3-2 6-2l174 0c2 0 5 0 7 2 3 2 4 4 5 7l6 18c1 2 0 5-1 6-1 2-3 3-5 3l-174 0c-3 0-5-1-7-3-3-1-4-4-5-6z"},"click":"function(gd) { \n        // is this being viewed in RStudio?\n        if (location.search == '?viewer_pane=1') {\n          alert('To learn about plotly for collaboration, visit:\\n https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html');\n        } else {\n          window.open('https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html', '_blank');\n        }\n      }"}],"modeBarButtonsToRemove":["sendDataToCloud"]},"data":[{"colorbar":{"title":"","ticklen":2},"colorscale":[["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0","rgba(68,1,84,1)"],["0.0050761421319797","rgba(68,3,85,1)"],["0.0050761421319797","rgba(68,3,85,1)"],["0.0050761421319797","rgba(68,3,85,1)"],["0.0101522842639594","rgba(68,6,87,1)"],["0.0101522842639594","rgba(68,6,87,1)"],["0.0152284263959391","rgba(69,8,88,1)"],["0.0203045685279188","rgba(69,11,90,1)"],["0.0253807106598985","rgba(69,13,91,1)"],["0.0406091370558376","rgba(69,20,95,1)"],["0.0765651438240267","rgba(70,32,105,1)"],["1","rgba(253,231,37,1)"]],"showscale":true,"z":[[17,2,8,13,0,1,1,0,0,3,0,1,3,1,0,1,3,7,5,0,2,0,1,4,1,0,1,6,0,3,0,4,2,0,5,2,2,1,17,2,9,0,0,1,0,1,1,197,0,1,6,2,0,1,4,5,36,0,2,0],[10,5,0,13,0,0,0,0,0,2,0,0,11,3,0,1,2,0,0,0,4,3,0,0,4,0,1,2,0,1,1,1,1,0,2,3,6,3,30,0,3,1,0,2,0,1,1,152,0,0,9,6,0,0,0,0,56,1,0,0],[2,5,3,9,0,0,0,5,0,2,0,0,6,0,0,1,0,1,5,0,3,0,0,0,3,0,0,1,2,1,2,1,2,0,0,2,0,3,6,1,6,7,1,0,0,0,2,82,2,1,3,6,2,0,0,0,69,2,0,0],[0,3,1,4,0,0,0,0,0,0,0,0,12,2,0,0,0,0,0,0,10,2,0,0,5,0,0,0,1,2,0,1,0,1,2,1,6,0,0,0,9,8,0,0,0,0,0,53,16,2,4,4,2,0,2,0,55,6,0,1],[4,0,1,0,0,0,0,0,0,3,0,0,3,0,0,0,1,0,0,18,5,2,0,0,4,1,1,0,3,0,0,1,3,1,8,0,0,6,3,1,4,8,5,1,0,0,1,46,5,0,3,5,1,0,1,0,55,0,5,0],[2,0,1,0,0,0,0,0,0,12,0,0,1,0,0,1,2,0,0,0,8,0,0,0,2,0,1,3,1,0,1,4,2,0,1,0,0,4,6,0,6,0,6,0,0,0,1,24,12,2,0,9,0,0,0,0,14,2,25,0],[0,0,0,1,0,0,0,0,4,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,5,2,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,26,2,0,0,1,0,0,4,0,16,0,9,0],[1,0,0,0,1,0,0,0,2,9,1,1,0,0,2,0,0,0,0,0,6,0,0,0,1,0,5,0,2,0,0,0,0,0,0,3,0,2,3,8,1,0,1,0,42,0,2,32,3,0,0,10,0,0,2,0,8,0,17,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,2,0,0,0,7,0,0,2,0,0,0,0,0,0,0,0,0,0,4,0]],"x":["ALABAMA ECOLOGICAL SERVICES FIELD OFFICE","ANCHORAGE FISH AND WILDLIFE FIELD OFFICE","ARCATA FISH AND WILDLIFE OFFICE","ARIZONA ECOLOGICAL SERVICES FIELD OFFICE","ARKANSAS ECOLOGICAL SERVICES FIELD OFFICE","ARLINGTON ECOLOGICAL SERVICES FIELD OFFICE","ASHEVILLE ECOLOGICAL SERVICES FIELD OFFICE","ASSISTANT REGIONAL DIRECTOR-CONSERVATION PARTNERSHIP","ASSISTANT REGIONAL DIRECTOR-ECOLOGICAL SERVICES","AUSTIN ECOLOGICAL SERVICES FIELD OFFICE","BLOOMINGTON ECOLOGICAL SERVICES FIELD OFFICE","CARIBBEAN ECOLOGICAL SERVICES FIELD OFFICE","CARLSBAD FISH AND WILDLIFE OFFICE","CENTRAL WASHINGTON FIELD OFFICE","CHESAPEAKE BAY ECOLOGICAL SERVICES FIELD OFFICE","COLORADO ECOLOGICAL SERVICES FIELD OFFICE","COLUMBIA ECOLOGICAL SERVICES FIELD OFFICE","COLUMBUS ECOLOGICAL SERVICES FIELD OFFICE","CORPUS CHRISTI ECOLOGICAL SERVICES FIELD OFFICE","DIVISION OF CONSULTATION, HCPS, RECOVERY AND STATE GRANTS","EAST LANSING ECOLOGICAL SERVICES FIELD OFFICE","FAIRBANKS FISH AND WILDLIFE FIELD OFFICE","GEORGIA ECOLOGICAL SERVICES FIELD OFFICE","HOUSTON ECOLOGICAL SERVICES FIELD OFFICE","IDAHO FISH AND WILDLIFE OFFICE","KANSAS ECOLOGICAL SERVICES FIELD OFFICE","KENTUCKY ECOLOGICAL SERVICES FIELD OFFICE","KLAMATH FALLS FISH AND WILDLIFE OFFICE","LOUISIANA ECOLOGICAL SERVICES FIELD OFFICE","MAINE ECOLOGICAL SERVICES FIELD OFFICE","MARION ECOLOGICAL SERVICES SUB-OFFICE","MISSISSIPPI ECOLOGICAL SERVICES FIELD OFFICE","MONTANA ECOLOGICAL SERVICES FIELD OFFICE","NEBRASKA ECOLOGICAL SERVICES FIELD OFFICE","NEVADA FISH AND WILDLIFE OFFICE","NEW ENGLAND ECOLOGICAL SERVICES FIELD OFFICE","NEW JERSEY ECOLOGICAL SERVICES FIELD OFFICE","NEW MEXICO ECOLOGICAL SERVICES FIELD OFFICE","NORTH FLORIDA ECOLOGICAL SERVICES FIELD OFFICE","OKLAHOMA ECOLOGICAL SERVICES FIELD OFFICE","OREGON FISH AND WILDLIFE OFFICE","PACIFIC ISLANDS FISH AND WILDLIFE OFFICE","PANAMA CITY ECOLOGICAL SERVICES FIELD OFFICE","PENNSYLVANIA ECOLOGICAL SERVICES FIELD OFFICE","RALEIGH ECOLOGICAL SERVICES FIELD OFFICE","RED BLUFF FISH AND WILDLIFE OFFICE","ROCK ISLAND ECOLOGICAL SERVICES FIELD OFFICE","SACRAMENTO FISH AND WILDLIFE OFFICE","SAN FRANCISCO BAY - DELTA FISH AND WILDLIFE","SOUTH CAROLINA ECOLOGICAL SERVICES","SOUTH FLORIDA ECOLOGICAL SERVICES FIELD OFFICE","TENNESSEE ECOLOGICAL SERVICES FIELD OFFICE","TWIN CITIES ECOLOGICAL SERVICES FIELD OFFICE","UPPER COLUMBIA RIVER FISH AND WILDLIFE OFFICE","UTAH ECOLOGICAL SERVICES FIELD OFFICE","VENTURA FISH AND WILDLIFE OFFICE","WASHINGTON FISH AND WILDLIFE OFFICE","WESTERN COLORADO ECOLOGICAL SERVICES FIELD OFFICE","WYOMING ECOLOGICAL SERVICES FIELD OFFICE","YREKA FISH AND WILDLIFE OFFICE"],"y":["2008","2009","2010","2011","2012","2013","2014","2015","2016"],"type":"heatmap","xaxis":"x","yaxis":"y"}],"base_url":"https://plot.ly"},"evals":["config.modeBarButtonsToAdd.0.click"],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<p>Hover over squares to get values, and note that you can zoom in to particular sections by clicking and dragging a box.</p>
+</div>
+</div>
+<div id="describing-take" class="section level1">
+<h1>Describing Take</h1>
+<div id="habitat-and-area-are-common-descriptors-of-authorized-take." class="section level3">
+<h3>Habitat and area are common descriptors of authorized take.</h3>
+<p>FWS recently formalized their practice of using proxies of numbers of individuals in ITSs, such as describing take in terms of acres of habitat. A simple analysis illustrated with a wordcloud shows this has been FWS’s practice even without the formal policy. Also notice the prominence of ‘harassment’: some significant portion of ITSs are recognizing non-lethal forms of take.</p>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /><div class="container-fluid">
+<div class="row">
+<div class="col-sm-12"></div>
+</div>
+</div></p>
+<p>Word size is proportional to its frequency in the take data. The word cloud is based on the frequency of the top 100 words, minus common words (e.g., <a href="https://en.wikipedia.org/wiki/Stop_words">stopwords</a>), numbers, and the terms ‘incidental’ and ‘take’, which are uninformative. 45 records include only a number (no units and no additional context) for take.</p>
+</div>
+</div>
+<div id="sufficient-data" class="section level1">
+<h1>Sufficient Data?</h1>
+<div id="even-the-species-with-the-most-data-is-insufficient-for-inference." class="section level3">
+<h3>Even the species with the most data is insufficient for inference.</h3>
+<p>There is not much that we can learn about previously authorized take, even for the species that has had take recorded (n = 231) more than any other species, bull trout (<em>Salvelinus confluentus</em>). The most-used take entries (top-left) are wholly insufficient. (How can there be adverse effects with no take when ‘harm,’ a component of take, can be defined as an adverse effect?) A decent number of take descriptions use measurable units in their text, but a brief perusal of the data indicates that the linear distance matches are often describing a distance from the action, not an amount lost.</p>
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+<div id="htmlwidget-a343d823aabdd741febf" style="width:100%;height:400px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a343d823aabdd741febf">{"x":{"data":[{"x":["adverse effects with no take.","yes","adverse effect w/no incidental take.","incidental take in the form of harassment only, no harm.","adverse effects from impacts to habitat, but no take of species.","adverse effects w/no incidental take.","adverse effect with no incidental take","adverse effect with no take."],"y":[8,5,4,4,3,3,2,2],"marker":{"fillcolor":"rgba(31,119,180,1)","color":"#440154","line":{"color":"transparent"}},"type":"bar","xaxis":"x","yaxis":"y"},{"x":["mile | feet","acre | ac.","individual | ind.","stress | subleth","redd"],"y":[69,26,24,10,5],"marker":{"fillcolor":"rgba(31,119,180,1)","color":"#440154","line":{"color":"transparent"}},"type":"bar","xaxis":"x2","yaxis":"y2"}],"layout":{"xaxis":{"domain":[0,0.45],"tickangle":45,"type":"category","categoryorder":"array","categoryarray":["adverse effect w/no incidental take.","adverse effect with no incidental take","adverse effect with no take.","adverse effects from impacts to habitat, but no take of species.","adverse effects w/no incidental take.","adverse effects with no take.","incidental take in the form of harassment only, no harm.","yes"],"anchor":"y"},"xaxis2":{"domain":[0.55,1],"type":"category","categoryorder":"array","categoryarray":["acre | ac.","individual | ind.","mile | feet","redd","stress | subleth"],"anchor":"y2"},"yaxis2":{"domain":[0,1],"anchor":"x2"},"yaxis":{"domain":[0,1],"anchor":"x"},"margin":{"b":200,"l":60,"t":25,"r":10},"title":"Top take statements and key words about take","showlegend":false},"config":{"modeBarButtonsToAdd":[{"name":"Collaborate","icon":{"width":1000,"ascent":500,"descent":-50,"path":"M487 375c7-10 9-23 5-36l-79-259c-3-12-11-23-22-31-11-8-22-12-35-12l-263 0c-15 0-29 5-43 15-13 10-23 23-28 37-5 13-5 25-1 37 0 0 0 3 1 7 1 5 1 8 1 11 0 2 0 4-1 6 0 3-1 5-1 6 1 2 2 4 3 6 1 2 2 4 4 6 2 3 4 5 5 7 5 7 9 16 13 26 4 10 7 19 9 26 0 2 0 5 0 9-1 4-1 6 0 8 0 2 2 5 4 8 3 3 5 5 5 7 4 6 8 15 12 26 4 11 7 19 7 26 1 1 0 4 0 9-1 4-1 7 0 8 1 2 3 5 6 8 4 4 6 6 6 7 4 5 8 13 13 24 4 11 7 20 7 28 1 1 0 4 0 7-1 3-1 6-1 7 0 2 1 4 3 6 1 1 3 4 5 6 2 3 3 5 5 6 1 2 3 5 4 9 2 3 3 7 5 10 1 3 2 6 4 10 2 4 4 7 6 9 2 3 4 5 7 7 3 2 7 3 11 3 3 0 8 0 13-1l0-1c7 2 12 2 14 2l218 0c14 0 25-5 32-16 8-10 10-23 6-37l-79-259c-7-22-13-37-20-43-7-7-19-10-37-10l-248 0c-5 0-9-2-11-5-2-3-2-7 0-12 4-13 18-20 41-20l264 0c5 0 10 2 16 5 5 3 8 6 10 11l85 282c2 5 2 10 2 17 7-3 13-7 17-13z m-304 0c-1-3-1-5 0-7 1-1 3-2 6-2l174 0c2 0 4 1 7 2 2 2 4 4 5 7l6 18c0 3 0 5-1 7-1 1-3 2-6 2l-173 0c-3 0-5-1-8-2-2-2-4-4-4-7z m-24-73c-1-3-1-5 0-7 2-2 3-2 6-2l174 0c2 0 5 0 7 2 3 2 4 4 5 7l6 18c1 2 0 5-1 6-1 2-3 3-5 3l-174 0c-3 0-5-1-7-3-3-1-4-4-5-6z"},"click":"function(gd) { \n        // is this being viewed in RStudio?\n        if (location.search == '?viewer_pane=1') {\n          alert('To learn about plotly for collaboration, visit:\\n https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html');\n        } else {\n          window.open('https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html', '_blank');\n        }\n      }"}],"modeBarButtonsToRemove":["sendDataToCloud"]},"source":"A","subplot":true,"base_url":"https://plot.ly"},"evals":["config.modeBarButtonsToAdd.0.click"],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>Although we cannot estimate the total amount of take that has been authorized for any species using the data FWS has recorded in the TAILS database, we can learn from this data.</p>
+<ul>
+<li><p><em>First and foremost</em>, the Service needs to require that take is recorded for formal consultations. (And that goes for NE/NLAA determinations too; the take field should be ‘Not Applicable’.) Without data there is nothing that can possibly be analyzed.</p></li>
+<li><p><em>Second</em>, the Service needs to provide detailed guidance as to how take is recorded. Free-form descriptions will always be sub-par, and details of acres, numbers, feet, duration of effects, and so-forth are needed.</p></li>
+<li><p><em>Third, and where the rubber meets the road</em>, the Service needs to train and require personnel to use take data when evaluating the environmental baseline in consultations <em>and</em> when conducting five-year status reviews.</p></li>
+</ul>
+<p>Without knowing how much is being ‘given away’ under section 7, the Service cannot know when to apply the brakes on authorized take. And without that knowledge, they are only making it harder to recover species that are approaching the brink through completely legal losses.</p>
+<p><br><br></p>
+<hr />
+<p><br><br></p>
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-2"></div>
+<div class="col-sm-8">
+<div style="text-align: center"><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"> <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a> <br /> This <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" rel="dct:type">work</span> by <a xmlns:cc="http://creativecommons.org/ns" href="http://defenders.org" property="cc:attributionName" rel="cc:attributionURL">Defenders of Wildlife</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. <br /></div>
+</div>
+<div class="col-sm-2"></div>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

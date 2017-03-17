@@ -1,0 +1,15 @@
+base
+d3wordcloud
+dplyr
+DT
+flexdashboard
+highcharter
+ggplot2
+plotly
+shiny
+stringr
+NLP
+tm
+viridisLite
+RColorBrewer
+wordcloud

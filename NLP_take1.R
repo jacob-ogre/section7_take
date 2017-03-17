@@ -21,6 +21,8 @@ library(ggdendro)
 library(ggplot2)
 library(ggthemes)
 library(NLP)
+library(openNLP)
+library(qdap)
 library(quanteda)
 library(tm)
 
@@ -105,6 +107,59 @@ take_pat3 <- as.data.frame(unlist(take_pat2))
 names(take_pat3) <- "take_state"
 head(take_pat3)
 dim(take_pat3)
+
+# look at POS tags in take_pat3
+sent_tok_ann <- Maxent_Sent_Token_Annotator()
+word_tok_ann <- Maxent_Word_Token_Annotator()
+takep3_ann1 <- annotate(take_pat3$take_state, list(sent_tok_ann, word_tok_ann))
+
+POS_ann <- Maxent_POS_Tag_Annotator()
+takep3_POS <- annotate(take_pat3$take_state, POS_ann, takep3_ann1)
+POS_words <- subset(takep3_POS, type == "word")
+POS_tags <- sapply(POS_words$features, `[[`, "POS")
+with_POS <- sprintf("%s/%s", 
+                    as.String(take_pat3$take_state)[POS_words], 
+                    POS_tags)
+
+takep3_ann2 <- sapply(take_pat3$take_state, 
+                      FUN = annotate, 
+                      list(sent_tok_ann, word_tok_ann))
+ann2_words <- lapply(takep3_ann2, FUN = subset, type == "word")
+
+res <- list()
+for (i in 1:length(takep3_ann2)) {
+    ares <- annotate(take_pat3$take_state[i], POS_ann, takep3_ann2[[i]])
+    ares_w <- data.frame(subset(ares, type == "word"))
+    res[[i]] <- ares_w
+}
+
+sprintf("%s/%s", as.String(take_pat3$take_state[1])[ann2_words[[1]]], sapply(res[[1]]$features, `[[`, "POS"))
+
+POS_tag_df <- data.frame(row = c(), word = c(), POS = c())
+for (i in 1:length(take_pat3$take_state)) {
+    parts <- res[[i]]$features
+    for (j in 1:length(ann2_words[[i]])) {
+        cur_row <- i
+        cur_word <- as.String(take_pat3$take_state[i])[ann2_words[[i]][j]]
+        cur_POS <- parts[[j]]$POS
+        cur_dat <- data.frame(row = cur_row, word = as.character(cur_word), POS = cur_POS)
+        POS_tag_df <- rbind(POS_tag_df, cur_dat)
+    }
+}
+head(POS_tag_df)
+
+write.table(POS_tag_df,
+            file = "~/POS_test_bulltrout_take_filt.tsv",
+            sep = "\t",
+            quote = FALSE,
+            row.names = FALSE)
+
+# NOTE TO SELF...I left off here, and the next thing to do is label each row/sentence
+# as to whether or not it contains a "real" take statement (TRUE) or whether the
+# statement is just describing the action (FALSE). Once done, I think I will
+# check if there are systematic POS differences between the TRUE and FALSE
+# rows, which would make summarizing take authorized possible.
+
 
 ###########################################################################
 # Now into the doc-feature matrix
